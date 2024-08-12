@@ -44,11 +44,6 @@ def aes_ecb_decrypt(ciphertext: bytes, key: bytes):
 def xor_bytes(b1: bytes, b2: bytes) -> bytes:
     return b''.join([(b1 ^ b2).to_bytes(1, 'big') for b1, b2 in zip(b1, b2)])
 
-def nep2wif(nep2: str, passphrase: str, compressed=True, n=16384, r=8, p=8) -> Tuple[str, str]:
-    private_key = nep2_to_private_key(nep2, passphrase.encode('utf-8'), n=n, r=r, p=p)
-    wif = private_key_to_wif(private_key, compressed)
-    return wif, address
-
 def private_key_to_neo3_address(private_key: bytes) -> str:
     public_key = ECC.construct(curve='secp256r1', d=int.from_bytes(private_key, 'big')).pointQ
     x = public_key.x.to_bytes(32, 'big')
@@ -60,6 +55,12 @@ def private_key_to_neo3_address(private_key: bytes) -> str:
     script_hash = ripemd160.digest()
     address = b58encode_check(b'\x35' + script_hash).decode('utf-8')
     return address
+
+def nep2wif(nep2: str, passphrase: str, compressed=True, n=16384, r=8, p=8) -> Tuple[str, str]:
+    private_key = nep2_to_private_key(nep2, passphrase.encode('utf-8'), n=n, r=r, p=p)
+    wif = private_key_to_wif(private_key, compressed)
+    address = private_key_to_neo3_address(private_key)
+    return wif, address
 
 def t():  # test
     private_key = nep2_to_private_key("6PYM7jHL4GmS8Aw2iEFpuaHTCUKjhT4mwVqdoozGU6sUE25BjV4ePXDdLz", b"neo")
