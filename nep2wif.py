@@ -3,6 +3,7 @@ from getpass import getpass
 from typing import List, Tuple
 import json
 from hashlib import scrypt, sha256
+import traceback
 from base58 import b58decode_check, b58encode, b58encode_check
 from Crypto.Cipher import AES  # pip install pycryptodome
 from Crypto.PublicKey import ECC
@@ -71,7 +72,11 @@ def t():  # test
     assert address == "NM7Aky765FG8NhhwtxjXRx7jEL1cnw7PBP"
 
 if __name__ == '__main__':
-    t()
+    try:
+        t()
+    except:
+        traceback.print_exc()
+        print('Exception was raised at runtime testing. This tool may not work correctly.')
     parser = argparse.ArgumentParser(prog='nep2wif.py',
         description='Transform Neo3 json wallet in NEP-2 format to compressed WIF private key')
     parser.add_argument('path', help='Path to your json wallet file')
